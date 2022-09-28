@@ -1,0 +1,78 @@
+---
+title: Saving `VCF`s to artifacts and back again
+author:
+- name: Aaron Lun
+  email: infinite.monkeys.with.keyboards@gmail.com
+package: alabaster.se
+date: "Revised: September 22, 2022"
+output:
+  BiocStyle::html_document
+vignette: >
+  %\VignetteIndexEntry{Saving and loading VCFs}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, echo=FALSE}
+library(BiocStyle)
+self <- Githubpkg("ArtifactDB/alabaster.vcf")
+knitr::opts_chunk$set(error=FALSE, warning=FALSE, message=FALSE)
+```
+
+# Overview 
+
+The `r self` package implements methods to save `VCF` objects to file artifacts and load them back into R.
+This refers specifically to the `SummarizedExperiment` subclasses (i.e., `CollapsedVCF` and `ExpandedVCF`) that are used to represent the variant calling data in an R session,
+which may contain additional modifications that cannot be easily stored inside the original VCF file.
+Check out the `r Githubpkg("ArtifactDB/alabaster.base")` for more details on the motivation and concepts of the **alabaster** framework.
+
+# Quick start
+
+Given a `VCF` object, we can use `stageObject()` to save it inside a staging directory:
+
+```{r}
+library(VariantAnnotation)
+fl <- system.file("extdata", "structural.vcf", package="VariantAnnotation")
+vcf <- readVcf(fl, genome="hg19")
+vcf
+
+library(alabaster.vcf)
+tmp <- tempfile()
+dir.create(tmp)
+meta <- stageObject(vcf, tmp, "vcf")
+.writeMetadata(meta, tmp)
+
+list.files(tmp, recursive=TRUE)
+```
+
+We can then load it back into the session with `loadObject()`.
+
+```{r}
+meta <- acquireMetadata(tmp, "vcf/experiment.json")
+roundtrip <- loadObject(meta, tmp)
+class(roundtrip)
+```
+
+More details on the metadata and on-disk layout are provided in the [schema](https://artifactdb.github.io/BiocObjectSchemas/html/vcf_experiment/v1.html).
+
+# Further comments
+
+We do not use VCF itself as our file format as the `VCF` may be decorated with more information (e.g., in the `rowData` or `colData`) that may not be easily stored in a VCF file.
+The VCF file is not amenable to random access of data, either for individual variants or for different aspects of the dataset, e.g., just the row annotations.
+Finally, it allow interpretation of the data as the SummarizedExperiment base class.
+
+The last point is worth some elaboration.
+Downstream consumers do not necessarily need to know anything about the `VCF` data structure to read the files,
+as long as they understand how to interpret the base `summarized_experiment` schema:
+
+```{r}
+library(alabaster.se)
+loadSummarizedExperiment(meta, tmp)
+```
+
+# Session information {-}
+
+```{r}
+sessionInfo()
+```
+
