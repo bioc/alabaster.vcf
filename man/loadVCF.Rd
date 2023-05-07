@@ -33,6 +33,9 @@ info <- stageObject(vcf, dir=tmp, path="experiment-1")
 loadVCF(info, tmp)
 
 }
+\seealso{
+The VcfWrapper class in \pkg{alabaster.files}, for saving/loading of another representation of VCF files.
+}
 \author{
 Aaron Lun
 }

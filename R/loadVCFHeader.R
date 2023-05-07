@@ -12,6 +12,9 @@
 #' As the name suggests, this only loads the headers of the VCF file.
 #' To load all contents into memory, use \code{\link{scanVcf}} instead.
 #'
+#' Users can override this function in \code{\link{loadVCF}} by calling \code{.altLoadVCFHeader}.
+#' This should be set to a function that accepts the same arguments as \code{loadVCFHeader} and returns a VCFHeader object.
+#' 
 #' @author Aaron Lun
 #'
 #' @examples
@@ -24,8 +27,23 @@
 #' loadVCFHeader(info, tmp)
 #' 
 #' @export
+#' @aliases .altLoadVCFHeader
 #' @importFrom VariantAnnotation scanVcfHeader
 loadVCFHeader <- function(info, project) {
     header.path <- acquireFile(project, info$path)
     scanVcfHeader(header.path)
+}
+
+header.env <- new.env()
+header.env$fun <- loadVCFHeader
+
+#' @export
+.altLoadVCFHeader <- function(fun) {
+    prev <- header.env$fun
+    if (missing(fun)) {
+        return(prev)
+    } else {
+        header.env$fun <- fun
+        return(invisible(prev))
+    }
 }

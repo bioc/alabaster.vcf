@@ -13,6 +13,9 @@
 #' It does \emph{not} load a VCF file!
 #' Use \code{\link{scanVcf}} instead if you want to create a \linkS4class{VCF} object from a VCF file.
 #'
+#' @seealso
+#' The VcfWrapper class in \pkg{alabaster.files}, for saving/loading of another representation of VCF files.
+#'
 #' @author Aaron Lun
 #'
 #' @examples
@@ -37,7 +40,7 @@ loadVCF <- function(vcf.info, project) {
     info.df <- .loadObject(info.meta, project)
 
     header.meta <- acquireMetadata(project, vcf.info$vcf_experiment$header$resource$path)
-    metadata(out)$header <- .loadObject(header.meta, project)
+    metadata(out)$header <- .altLoadVCFHeader()(header.meta, project)
 
     if (!is(out, "RangedSummarizedExperiment")) {
         out <- as(out, "RangedSummarizedExperiment")

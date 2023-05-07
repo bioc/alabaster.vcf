@@ -2,6 +2,7 @@
 % Please edit documentation in R/loadVCFHeader.R
 \name{loadVCFHeader}
 \alias{loadVCFHeader}
+\alias{.altLoadVCFHeader}
 \title{Load a VCF header}
 \usage{
 loadVCFHeader(info, project)
@@ -21,6 +22,9 @@ Load the headers of a VCF file into a \linkS4class{VCFHeader} object.
 \details{
 As the name suggests, this only loads the headers of the VCF file.
 To load all contents into memory, use \code{\link{scanVcf}} instead.
+
+Users can override this function in \code{\link{loadVCF}} by calling \code{.altLoadVCFHeader}.
+This should be set to a function that accepts the same arguments as \code{loadVCFHeader} and returns a VCFHeader object.
 }
 \examples{
 fl <- system.file("extdata", "structural.vcf", package="VariantAnnotation")
