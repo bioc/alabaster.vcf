@@ -1,36 +1,50 @@
-#' Stage a VCF object
+#' Save a VCF object to disk
 #'
-#' Save the contents of a \linkS4class{VCF} object to file. 
+#' Save a \linkS4class{VCF} object to its on-disk representation, namely a VCF file with the same contents. 
 #'
 #' @param x Any instance of a \linkS4class{VCF} class or one of its subclasses.
-#' @inheritParams alabaster.base::stageObject
-#' @param ... Further arguments to pass to \code{\link{stageObject,RangedSummarizedExperiment-method}}.
+#' @inheritParams alabaster.base::saveObject
 #'  
-#' @details
-#' Note that we do \emph{not} save the contents of \code{x} in VCF format.
-#' Rather, we re-use the existing machinery for staging SummarizedExperiments from the \pkg{alabaster.se}.
-#' This is more amenable for random access by feature/sample and ensures that we are consistent with the expectations of the parent class.
-#' Applications requiring actual VCF files can instead use \code{\link{writeVcf}} to generate them from \code{x}.
-#'
 #' @author Aaron Lun
 #'
-#' @return The contents of \code{x} are saved to file inside \code{path}.
-#' A named list containing metadata is returned. 
+#' @return \code{x} is saved to file inside \code{path}, and \code{NULL} is returned.
+#'
+#' @seealso
+#' \code{\link{readVCF}}, to read a VCF object back to the R session.
 #' 
 #' @examples
 #' fl <- system.file("extdata", "structural.vcf", package="VariantAnnotation")
-#' vcf <- readVcf(fl, genome="hg19")
+#' vcf <- readVcf(fl)
 #'
 #' tmp <- tempfile()
-#' dir.create(tmp)
-#' stageObject(vcf, dir=tmp, path="experiment-1")
+#' saveObject(vcf, tmp)
 #'
 #' @export
-#' @rdname stageVCF
+#' @rdname saveVCF 
+#' @aliases 
+#' stageObject,VCF-method
+#' stageObject,VCFHeader-method
 #' @import methods alabaster.base VariantAnnotation
-#' @importFrom S4Vectors metadata<- metadata
-#' @importMethodsFrom alabaster.string stageObject
-#' @importMethodsFrom alabaster.se stageObject
+setMethod("saveObject", "VCF", function(x, path, ...) {
+    dir.create(path, showWarnings=FALSE)
+
+    # Saving as bgzip for now, as VariantAnnotation::readVcf refuses to work
+    # with regularly Gzipped files, see Bioconductor/VariantAnnotation#32.
+    tmp <- tempfile()
+    out <- writeVcf(x, tmp, index=TRUE)
+    file.rename(out, file.path(path, "file.vcf.gz"))
+
+    saveObjectFile(path, "vcf_experiment", list(vcf_experiment=list(version="1.0", dimensions=dim(x), expanded=is(x, "ExpandedVCF"))))
+    invisible(NULL)
+})
+
+########################
+#### OLD STUFF HERE ####
+########################
+
+#' @export
+#' @import alabaster.string
+#' @importFrom S4Vectors metadata metadata<-
 setMethod('stageObject', "VCF", function(x, dir, path, child=FALSE, ...) {
     dir.create(file.path(dir, path), showWarnings=FALSE)
 

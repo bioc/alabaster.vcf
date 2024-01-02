@@ -1,25 +1,4 @@
-#' Stage the VCF headers
-#'
-#' Save the contents of a \linkS4class{VCFHeader} object to file.
-#' This is formatted as a valid VCF file that lacks any entries.
-#'
-#' @param x A \linkS4class{VCFHeader} object.
-#' @inheritParams alabaster.base::stageObject
-#'
-#' @author Aaron Lun
-#'
-#' @return The contents of \code{x} are saved to file inside \code{path}.
-#' A named list containing metadata is returned. 
-#' 
-#' @examples
-#' fl <- system.file("extdata", "structural.vcf", package="VariantAnnotation")
-#' hdr <- scanVcfHeader(fl)
-#'
-#' tmp <- tempfile()
-#' dir.create(tmp)
-#' stageObject(hdr, dir=tmp, path="headers")
-#'
-#' @rdname stageVCFHeader
+#' @export
 #' @importFrom Rsamtools bgzip
 setMethod("stageObject", "VCFHeader", function(x, dir, path, child=FALSE) { 
     dir.create(file.path(dir, path), showWarnings=FALSE)

@@ -4,7 +4,7 @@
 # Just re-using the file from there.
 library(VariantAnnotation)
 fl <- system.file("extdata", "structural.vcf", package="VariantAnnotation")
-vcf <- readVcf(fl, genome="hg19")
+vcf <- readVcf(fl)
 vcf <- expand(vcf)
 
 test_that("Staging an ExpandedVCF works as expected", {
@@ -21,6 +21,32 @@ test_that("Staging an ExpandedVCF works as expected", {
     expect_s4_class(assay(roundtrip), "DelayedMatrix")
     expect_identical2(vcf, roundtrip)
 })
+
+test_that("Saving an ExpandedVCF works for all files", {
+    exdir <- system.file("extdata", package="VariantAnnotation")
+    all.files <- list.files(exdir, pattern=".vcf(.gz)?$")
+    all.files <- setdiff(all.files, "hapmap_exome_chr22.vcf.gz") # TODO: fix in VariantAnnotation.
+    all.files <- setdiff(all.files, "ex2.vcf") # TODO: fix in VariantAnnotation.
+    all.files <- setdiff(all.files, "h1187-10k.vcf.gz") # TODO: fix in VariantAnnotation.
+
+    for (d in file.path(exdir, all.files)) {
+        vcf <- readVcf(d)
+        vcf <- expand(vcf)
+
+        tmp <- tempfile()
+        saveObject(vcf, tmp)
+        roundtrip <- readObject(tmp)
+
+        # TODO: fix in VariantAnnotation.
+        n <- names(metadata(vcf)$header@header)
+        metadata(roundtrip)$header@header <- metadata(roundtrip)$header@header[n]
+        metadata(roundtrip)$header@reference <- metadata(vcf)$header@reference
+        metadata(roundtrip)$header@header$fileDate <- metadata(vcf)$header@header$fileDate
+
+        expect_identical(vcf, roundtrip)
+    }
+})
+
 
 test_that("Staging an ExpandedVCF works with higher-dimensional arrays", {
     assay(vcf, "WHEE", withDimnames=FALSE) <- array(runif(prod(dim(vcf)) * 2), c(dim(vcf), 2))
