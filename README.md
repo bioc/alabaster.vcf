@@ -1,17 +1,17 @@
 # Save `VCF`s to file
 
+|Environment|Status|
+|---|---|
+|[BioC-release](https://bioconductor.org/packages/release/bioc/html/alabaster.vcf.html)|[![Release OK](https://bioconductor.org/shields/build/release/bioc/alabaster.vcf.svg)](http://bioconductor.org/checkResults/release/bioc-LATEST/alabaster.vcf/)|
+|[BioC-devel](https://bioconductor.org/packages/devel/bioc/html/alabaster.vcf.html)|[![Devel OK](https://bioconductor.org/shields/build/devel/bioc/alabaster.vcf.svg)](http://bioconductor.org/checkResults/devel/bioc-LATEST/alabaster.vcf/)|
+
 The **alabaster.vcf** package implements methods for saving and loading `VCF` objects (from the [**VariantAnnotation**](https://bioconductor.org/packages/VariantAnnotation) package) under the **alabaster** framework.
-Note that it doesn't save the VCF files themselves, but rather, the `SummarizedExperiment`-based representation of those files in the R session.
-To get started, install the package and its dependencies from GitHub:
+It does so by converting them back into VCF files but with additional metadata to store the number of samples and positions.
+To get started, install the package and its dependencies from [Bioconductor](https://bioconductor.org/packages/alabaster.vcf):
 
 ```r
-devtools::install_github("ArtifactDB/alabaster.schemas")
-devtools::install_github("ArtifactDB/alabaster.base")
-devtools::install_github("ArtifactDB/alabaster.ranges")
-devtools::install_github("ArtifactDB/alabaster.matrix")
-devtools::install_github("ArtifactDB/alabaster.se")
-devtools::install_github("ArtifactDB/alabaster.string")
-devtools::install_github("ArtifactDB/alabaster.vcf")
+# install.packages("BiocManager")
+BiocManager::install("alabaster.vcf")
 ```
 
 In the example below, we save a `VCF` object to file:
@@ -50,12 +50,9 @@ vcf
 
 library(alabaster.vcf)
 tmp <- tempfile()
-dir.create(tmp)
-meta <- stageObject(vcf, tmp, "vcf")
-meta[["$schema"]]
-## [1] "vcf_experiment/v1.json"
+saveObject(vcf, tmp)
 
-roundtrip <- loadObject(meta, tmp)
+roundtrip <- readObject(tmp)
 class(roundtrip)
 ## [1] "CollapsedVCF"
 ## attr(,"package")
