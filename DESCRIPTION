@@ -1,7 +1,7 @@
 Package: alabaster.vcf
 Title: Save and Load Variant Data to/from File
-Version: 1.13.0
-Date: 2024-01-02
+Version: 1.13.1
+Date: 2026-09-05
 Description:
     Save variant calling SummarizedExperiment to file and load them back as VCF objects.
     This is a more portable alternative to serialization of such objects into RDS files.
