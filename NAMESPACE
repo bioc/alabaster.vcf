@@ -11,11 +11,15 @@ import(alabaster.base)
 import(alabaster.string)
 import(methods)
 importFrom(Rsamtools,bgzip)
-importFrom(S4Vectors,"metadata<-")
-importFrom(S4Vectors,DataFrame)
-importFrom(S4Vectors,metadata)
-importFrom(S4Vectors,unstrsplit)
-importFrom(VariantAnnotation,geno)
-importFrom(VariantAnnotation,samples)
-importFrom(VariantAnnotation,scanVcfHeader)
+importFrom(S4Vectors,
+  "metadata<-",
+  DataFrame,
+  metadata,
+  unstrsplit
+)
+importFrom(VariantAnnotation,
+  geno,
+  samples,
+  scanVcfHeader
+)
 importFrom(alabaster.se,loadSummarizedExperiment)

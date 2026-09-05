@@ -1,8 +1,8 @@
 #' Save a VCF object to disk
 #'
-#' Save a \linkS4class{VCF} object to its on-disk representation, namely a VCF file with the same contents. 
+#' Save a \link[VariantAnnotation]{VCF} object to its on-disk representation, namely a VCF file with the same contents. 
 #'
-#' @param x Any instance of a \linkS4class{VCF} class or one of its subclasses.
+#' @param x Any instance of a \link[VariantAnnotation]{VCF} class or one of its subclasses.
 #' @inheritParams alabaster.base::saveObject
 #'  
 #' @author Aaron Lun

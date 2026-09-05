@@ -23,8 +23,9 @@ Suggests:
     rmarkdown,
     BiocStyle,
     testthat
-RoxygenNote: 7.2.3
 VignetteBuilder: knitr
 biocViews:
     DataImport,
     DataRepresentation
+Encoding: UTF-8
+Config/roxygen2/version: 8.1.0

@@ -1,6 +1,7 @@
 #' @export
 #' @importFrom VariantAnnotation scanVcfHeader
 loadVCFHeader <- function(info, project) {
+    .Deprecated()
     header.path <- acquireFile(project, info$path)
     scanVcfHeader(header.path)
 }

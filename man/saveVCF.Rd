@@ -9,17 +9,17 @@
 \S4method{saveObject}{VCF}(x, path, ...)
 }
 \arguments{
-\item{x}{Any instance of a \linkS4class{VCF} class or one of its subclasses.}
+\item{x}{Any instance of a \link[VariantAnnotation]{VCF} class or one of its subclasses.}
 
 \item{path}{String containing the path to a directory in which to save \code{x}.}
 
-\item{...}{Further arguments to pass to specific methods.}
+\item{...}{Additional named arguments to pass to specific methods.}
 }
 \value{
 \code{x} is saved to file inside \code{path}, and \code{NULL} is returned.
 }
 \description{
-Save a \linkS4class{VCF} object to its on-disk representation, namely a VCF file with the same contents.
+Save a \link[VariantAnnotation]{VCF} object to its on-disk representation, namely a VCF file with the same contents.
 }
 \examples{
 fl <- system.file("extdata", "structural.vcf", package="VariantAnnotation")
